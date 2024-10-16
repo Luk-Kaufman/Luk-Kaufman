@@ -1,7 +1,7 @@
 # About me:
 
 
-**Luk-Kaufman/Luk-Kaufman** is ✨ _special_ ✨
+**Luk-Kaufman/Luk-Kaufman**
 
 - My Name is Luke Kaufman
 - My Major is Computer Engineering and I am going to work my way up for a masters degree.
