@@ -1,0 +1,172 @@
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.event.InputEvent;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class test {
+    public static void main(String[] args) throws AWTException, InterruptedException, IOException, UnsupportedFlavorException {
+        //Wait to arrive in Africa
+        //Thread.sleep(1740000);
+        Robot robot = new Robot();
+        PointerInfo pointerInfo = MouseInfo.getPointerInfo();
+        //Opening Torn
+        robot.mouseMove(565, 305);
+        try { Thread.sleep(2000);} catch (InterruptedException e) {}
+        //robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+        //robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+        openTorn();
+        waitUntilOpen(pointerInfo,robot);
+        //wait 1 sec to be safe
+        Thread.sleep(3000);
+        //copy whole page
+        robot.keyPress(17); //ctrl is pressed
+        robot.keyPress(65); //a is pressed
+        robot.keyRelease(65);// a is released
+        Thread.sleep(500);
+        robot.keyPress(67); //c is pressed
+        robot.keyRelease(67);// c is released
+        robot.keyRelease(17);// ctrl is released
+  
+        //copy page source to data.txt
+        // Get content from clipboard
+        Thread.sleep(2222); // wait for clipboard to update properly
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        String pageText = (String) clipboard.getData(DataFlavor.stringFlavor);
+
+        // Write to file
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("data.txt"))) {
+            writer.write(pageText);
+        }
+
+        for(int i =0;i<8;i++){
+            //if(isPresent("data.txt","Wolverine")){
+            if(isPresent("data.txt","Wolverine")){
+            
+            buyWolverine(robot);
+                break;
+            }if(isPresent("data.txt","Crocus")){
+                buyCrocus();
+                break;
+            }else{
+                Thread.sleep(300000);
+            }
+        }
+        System.out.println("success");
+    }
+    
+    static boolean isPresent(String fileName, String word){
+            try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+                String line;
+                Pattern pattern = Pattern.compile("\\b" + Pattern.quote(word) + "\\b");  // Word boundaries to ensure exact match
+    
+                // Read each line from the file
+                while ((line = reader.readLine()) != null) {
+                    Matcher matcher = pattern.matcher(line);
+                    // If the word is found, return true
+                    if (matcher.find()) {
+                        return true;
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            
+            // If no match is found, return false
+            return false;
+    }
+
+    static void buyCrocus() {
+        
+    }
+
+    static void buyWolverine(Robot robot) {
+        //click on text box to input value
+        robot.mouseMove(1215, 331);
+        try { Thread.sleep(500);} catch (InterruptedException e) {}
+        robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+        robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+        try { Thread.sleep(500);} catch (InterruptedException e) {}
+        //input value
+        robot.keyPress(49);
+        robot.keyRelease(49);
+
+        //purchase
+        robot.mouseMove(1252, 331);
+        robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+        robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+        try { Thread.sleep(500);} catch (InterruptedException e) {}
+        robot.mouseMove(595, 355);
+        try { Thread.sleep(500);} catch (InterruptedException e) {}
+        robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+        robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+        //Return to Torn
+        robot.mouseMove(1252, 180);
+        try { Thread.sleep(5000);} catch (InterruptedException e) {}
+        robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+        robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+        try { Thread.sleep(5000);} catch (InterruptedException e) {}
+        robot.mouseMove(565, 305);
+        try { Thread.sleep(5000);} catch (InterruptedException e) {}
+        robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+        robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+    }
+
+    public static void sampleCode() throws AWTException, InterruptedException {
+        Robot robot = new Robot();
+        PointerInfo pointerInfo = MouseInfo.getPointerInfo();
+        
+        robot.mouseMove(475, 270);
+        Thread.sleep(100); // Wait 1/10 a second
+
+        // Left click and copy paste
+        robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+        robot.mouseMove(580, 270);
+        robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+        robot.keyPress(17); //ctrl is pressed
+        robot.keyPress(67); //c is pressed
+        Thread.sleep(1000);
+        robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+        robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+        robot.mouseMove(580, 290);
+        
+        Thread.sleep(1000);
+        robot.keyPress(17); //ctrl is pressed
+        robot.keyPress(86); //c is pressed
+        try {
+            Thread.sleep(900);
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+    }
+    static void waitUntilOpen(PointerInfo pointerInfo, Robot robot){
+        int counter =0;
+        while((robot.getPixelColor(234,275)).getRGB()!=new Color(202,214,221).getRGB()){
+            Color col =robot.getPixelColor(234,275);
+            counter++;
+        }
+        System.out.println(counter);
+    }
+    static void printCursorCords(PointerInfo pointerInfo){
+        Point point = pointerInfo.getLocation();
+        int x = (int) point.getX();
+        int y = (int) point.getY();
+        System.out.println(x +" "+ y);
+    }
+    static void openTorn(){
+        try {
+            String url = "https://www.torn.com";
+            String chromePath = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
+            Runtime.getRuntime().exec(new String[] {chromePath, url});
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
